@@ -61,17 +61,20 @@
                 shirtDiv.className = 'shirt';
                 
                 const title = document.createElement('h3');
-                title.textContent = shirt.name;
+                if(shirt.name) {
+                    title.textContent = shirt.name;
+                }
+                else {
+                    shirt.name = "default shirt";
+                }
 
                 const image = document.createElement('img');
+                if(!shirt.colors.white.front) {
+                image.src = shirt.default.front;
+            } else {
                 image.src = shirt.colors.white.front;
+            }
                 image.alt = shirt.name;
-
-                const description = document.createElement('p');
-                description.textContent = shirt.description;
-
-                const price = document.createElement('p');
-                price.textContent = `Цена: ${shirt.price}`;
 
                 const quickViewButton = document.createElement('button');
                 quickViewButton.textContent = 'Быстрый просмотр';
@@ -81,8 +84,6 @@
 
                 shirtDiv.appendChild(title);
                 shirtDiv.appendChild(image);
-                shirtDiv.appendChild(description);
-                shirtDiv.appendChild(price);
                 shirtDiv.appendChild(quickViewButton);
                 shirtDiv.appendChild(seePageButton);
 
