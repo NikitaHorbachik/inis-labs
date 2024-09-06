@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наши Майки</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .shirt-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .shirt {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            width: 200px;
+        }
+        .shirt img {
+            max-width: 100%;
+            height: auto;
+        }
+        .shirt button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .shirt button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Наши Майки</h1>
+    <div id="shirtDisplay" class="shirt-container"></div>
+
+    <script src="shirts.js"></script>
+    <script>
+        function renderShirts(shirtArray) {
+            const container = document.getElementById('shirtDisplay');
+            
+            shirtArray.forEach(shirt => {
+                const shirtDiv = document.createElement('div');
+                shirtDiv.className = 'shirt';
+                
+                const title = document.createElement('h3');
+                title.textContent = shirt.name;
+
+                const image = document.createElement('img');
+                image.src = shirt.colors.white.front;
+                image.alt = shirt.name;
+
+                const description = document.createElement('p');
+                description.textContent = shirt.description;
+
+                const price = document.createElement('p');
+                price.textContent = `Цена: ${shirt.price}`;
+
+                const quickViewButton = document.createElement('button');
+                quickViewButton.textContent = 'Быстрый просмотр';
+
+                const seePageButton = document.createElement('button');
+                seePageButton.textContent = 'Смотреть страницу';
+
+                shirtDiv.appendChild(title);
+                shirtDiv.appendChild(image);
+                shirtDiv.appendChild(description);
+                shirtDiv.appendChild(price);
+                shirtDiv.appendChild(quickViewButton);
+                shirtDiv.appendChild(seePageButton);
+
+                container.appendChild(shirtDiv);
+            });
+        }
+
+        renderShirts(shirts);
+    </script>
+</body>
+</html>
