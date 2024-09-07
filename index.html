@@ -9,15 +9,31 @@
             background-color: white;
             color: darkblue;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
             margin: 0;
         }
+        p {
+            margin: 5px;
+        }
+        div {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            margin: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>Добро пожаловать!</h1>
-    <br><p><a href="lab1/index.html"> Переход на лабораторную работу 1 </a></p>
+    <div>
+        <h1>Здравствуйте!</h1>
+        <p>Лабораторные работы</p>
+        <p>студента группы 110101</p>
+        <p>ФИО: Горбачик Никита Сергеевич</p>
+    </div>
+    <div>
+        <p>Переход на <a href="lab1/index.html">первую лабораторную работу</a></p>
+    </div>
 </body>
 </html>
