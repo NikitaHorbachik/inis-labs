@@ -24,11 +24,12 @@
             justify-content: center;
         }
         .shirt {
-            background-color: #fff;
+            background-color: #dddcdc;
             border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
             width: 200px;
+            border-radius: 20px;
         }
         .shirt img {
             max-width: 100%;
@@ -37,13 +38,14 @@
         .shirt button {
             margin: 5px;
             padding: 10px;
-            background-color: #007bff;
+            background-color: #414141;
             color: #fff;
             border: none;
             cursor: pointer;
+            border-radius: 20px;
         }
         .shirt button:hover {
-            background-color: #0056b3;
+            background-color: #000000;
         }
     </style>
 </head>
@@ -60,21 +62,34 @@
                 const shirtDiv = document.createElement('div');
                 shirtDiv.className = 'shirt';
                 
+
                 const title = document.createElement('h3');
-                if(shirt.name) {
-                    title.textContent = shirt.name;
-                }
-                else {
-                    shirt.name = "default shirt";
+                if (shirt.name && shirt.name.trim() !== "") {
+                title.textContent = shirt.name;
+                } else {
+                        shirt.name = "Default shirt name";
+                        title.textContent = shirt.name;
                 }
 
+
                 const image = document.createElement('img');
-                if(!shirt.colors.white.front) {
-                image.src = shirt.default.front;
-            } else {
-                image.src = shirt.colors.white.front;
-            }
+                if (shirt.colors && Object.keys(shirt.colors).length > 0) {
+                    const firstColor = Object.keys(shirt.colors)[0];
+                    image.src = shirt.colors[firstColor].front;
+                } else {
+                    image.src = shirt.default.front;
+                }
                 image.alt = shirt.name;
+
+
+                const colorCount = Object.keys(shirt.colors).length;
+                const shirtInfo = document.createElement('p');
+                if(colorCount === 1) {
+                    shirtInfo.textContent = `Майка "${shirt.name}" доступна в ${colorCount} цвете.`;
+                } else {
+                    shirtInfo.textContent = `Майка "${shirt.name}" доступна в ${colorCount} цветах.`;
+                }
+                
 
                 const quickViewButton = document.createElement('button');
                 quickViewButton.textContent = 'Быстрый просмотр';
@@ -84,6 +99,7 @@
 
                 shirtDiv.appendChild(title);
                 shirtDiv.appendChild(image);
+                shirtDiv.appendChild(shirtInfo);
                 shirtDiv.appendChild(quickViewButton);
                 shirtDiv.appendChild(seePageButton);
 
