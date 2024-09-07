@@ -47,11 +47,53 @@
         .shirt button:hover {
             background-color: #000000;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <h1>Наши Майки</h1>
     <div id="shirtDisplay" class="shirt-container"></div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <p id="modalPrice"></p>
+            <img id="modalImage" src="" alt="Shirt Image">
+        </div>
+    </div>
 
     <script src="shirts.js"></script>
     <script>
@@ -93,6 +135,7 @@
 
                 const quickViewButton = document.createElement('button');
                 quickViewButton.textContent = 'Быстрый просмотр';
+                quickViewButton.addEventListener('click', () => showQuickView(shirt));
 
                 const seePageButton = document.createElement('button');
                 seePageButton.textContent = 'Смотреть страницу';
@@ -105,6 +148,48 @@
 
                 container.appendChild(shirtDiv);
             });
+        }
+
+        function showQuickView(shirt) {
+            const modal = document.getElementById('myModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalPrice = document.getElementById('modalPrice');
+            const modalImage = document.getElementById('modalImage');
+
+            modalTitle.textContent = shirt.name;
+            modalDescription.textContent = shirt.description;
+            modalPrice.textContent = `Цена: ${shirt.price}`;
+
+            let colorKeys = Object.keys(shirt.colors);
+            let index = 0;
+
+            function showNextImage() {
+                if (index < colorKeys.length) {
+                    modalImage.src = shirt.colors[colorKeys[index]].front;
+                    index++;
+                } else {
+                    index = 0;
+                    modalImage.src = shirt.colors[colorKeys[index]].front;
+                    index++;
+                }
+                setTimeout(showNextImage, 2000);
+            }
+
+            showNextImage();
+
+            modal.style.display = "block";
+
+            const closeBtn = document.getElementsByClassName('close')[0];
+            closeBtn.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
         }
 
         renderShirts(shirts);
