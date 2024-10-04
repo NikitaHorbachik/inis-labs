@@ -4,82 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Наши Майки</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            color: #333;
-        }
-        .shirt-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        .shirt {
-            background-color: #dddcdc;
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-            width: 200px;
-            border-radius: 20px;
-        }
-        .shirt img {
-            max-width: 100%;
-            height: auto;
-        }
-        .shirt button {
-            margin: 5px;
-            padding: 10px;
-            background-color: #414141;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 20px;
-        }
-        .shirt button:hover {
-            background-color: #000000;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Наши Майки</h1>
@@ -87,112 +12,14 @@
 
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <span class="close">×</span>
+            <span class="close"></span>
             <h2 id="modalTitle"></h2>
             <p id="modalDescription"></p>
             <p id="modalPrice"></p>
             <img id="modalImage" src="" alt="Shirt Image">
         </div>
     </div>
-
     <script src="shirts.js"></script>
-    <script>
-        function renderShirts(shirtArray) {
-            const container = document.getElementById('shirtDisplay');
-            
-            shirtArray.forEach(shirt => {
-                const shirtDiv = document.createElement('div');
-                shirtDiv.className = 'shirt';
-                
-
-                const title = document.createElement('h3');
-                if (shirt.name && shirt.name.trim() !== "") {
-                title.textContent = shirt.name;
-                } else {
-                        title.textContent = shirt.name;
-                }
-
-
-                const image = document.createElement('img');
-                if (shirt.colors && Object.keys(shirt.colors).length > 0) {
-                    const firstColor = Object.keys(shirt.colors)[0];
-                    image.src = shirt.colors[firstColor].front;
-                } else {
-                    image.src = shirt.default.front;
-                }
-                image.alt = shirt.name;
-
-
-                const colorCount = Object.keys(shirt.colors).length;
-                const shirtInfo = document.createElement('p');
-                if(colorCount === 1) {
-                    shirtInfo.textContent = `Майка "${shirt.name}" доступна в ${colorCount} цвете.`;
-                } else {
-                    shirtInfo.textContent = `Майка "${shirt.name}" доступна в ${colorCount} цветах.`;
-                }
-                
-
-                const quickViewButton = document.createElement('button');
-                quickViewButton.textContent = 'Быстрый просмотр';
-                quickViewButton.addEventListener('click', () => showQuickView(shirt));
-
-                const seePageButton = document.createElement('button');
-                seePageButton.textContent = 'Смотреть страницу';
-
-                shirtDiv.appendChild(title);
-                shirtDiv.appendChild(image);
-                shirtDiv.appendChild(shirtInfo);
-                shirtDiv.appendChild(quickViewButton);
-                shirtDiv.appendChild(seePageButton);
-
-                container.appendChild(shirtDiv);
-            });
-        }
-
-        function showQuickView(shirt) {
-            const modal = document.getElementById('myModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalDescription = document.getElementById('modalDescription');
-            const modalPrice = document.getElementById('modalPrice');
-            const modalImage = document.getElementById('modalImage');
-
-            modalTitle.textContent = shirt.name;
-            modalDescription.textContent = shirt.description;
-            modalPrice.textContent = `Цена: ${shirt.price}`;
-
-            let colorKeys = Object.keys(shirt.colors);
-            let index = 0;
-
-            function showNextImage() {
-                if (index < colorKeys.length) {
-                    modalImage.src = shirt.colors[colorKeys[index]].front;
-                    index++;
-                } else {
-                    index = 0;
-                    modalImage.src = shirt.colors[colorKeys[index]].front;
-                    index++;
-                }
-                setTimeout(showNextImage, 2000);
-            }
-
-            
-            showNextImage();
-
-            modal.style.display = "block";
-
-            const closeBtn = document.getElementsByClassName('close')[0];
-            closeBtn.onclick = function() {
-                modal.style.display = "none";
-            }
-
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-        }
-
-        renderShirts(shirts);
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
