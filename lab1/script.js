@@ -4,15 +4,9 @@ function renderShirts(shirtArray) {
     shirtArray.forEach(shirt => {
         const shirtDiv = document.createElement('div');
         shirtDiv.className = 'shirt';
-        
 
         const title = document.createElement('h3');
-        if (shirt.name && shirt.name.trim() !== "") {
         title.textContent = shirt.name;
-        } else {
-                title.textContent = shirt.name;
-        }
-
 
         const image = document.createElement('img');
         if (shirt.colors && Object.keys(shirt.colors).length > 0) {
@@ -23,15 +17,13 @@ function renderShirts(shirtArray) {
         }
         image.alt = shirt.name;
 
-
         const colorCount = Object.keys(shirt.colors).length;
         const shirtInfo = document.createElement('p');
-        if(colorCount === 1) {
+        if (colorCount === 1) {
             shirtInfo.textContent = `Майка "${shirt.name}" доступна в ${colorCount} цвете.`;
         } else {
             shirtInfo.textContent = `Майка "${shirt.name}" доступна в ${colorCount} цветах.`;
         }
-        
 
         const quickViewButton = document.createElement('button');
         quickViewButton.textContent = 'Быстрый просмотр';
@@ -39,6 +31,7 @@ function renderShirts(shirtArray) {
 
         const seePageButton = document.createElement('button');
         seePageButton.textContent = 'Смотреть страницу';
+        seePageButton.addEventListener('click', () => goToDetailsPage(shirt)); // Добавляем вызов функции при клике
 
         shirtDiv.appendChild(title);
         shirtDiv.appendChild(image);
@@ -50,9 +43,17 @@ function renderShirts(shirtArray) {
     });
 }
 
+// Функция для перехода на страницу details.html с сохранением данных о майке
+function goToDetailsPage(shirt) {
+    // Сохраняем данные о майке в localStorage
+    localStorage.setItem('selectedShirt', JSON.stringify(shirt));
+    // Перенаправляем на страницу details.html
+    window.location.href = '../lab2/details.html';
+}
+
 function showQuickView(shirt) {
     const modal = document.getElementById('myModal');
-    const modalContent = document.querySelector('.modal-content'); // Модальное содержимое
+    const modalContent = document.querySelector('.modal-content');
     const modalTitle = document.getElementById('modalTitle');
     const modalDescription = document.getElementById('modalDescription');
     const modalPrice = document.getElementById('modalPrice');
@@ -92,6 +93,5 @@ function showQuickView(shirt) {
         }
     }
 }
-
 
 renderShirts(shirts);

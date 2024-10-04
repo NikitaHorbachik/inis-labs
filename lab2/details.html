@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Описание товара</title>
+    <title>Детали товара</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,38 +14,37 @@
             margin: 0;
             padding: 20px;
         }
-        h1 {
+        h1, h3 {
             color: #333;
         }
-        .shirt-container {
+        #shirtDetails {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
         }
-        .shirt {
-            background-color: #dddcdc;
-            border: 1px solid #ddd;
+        .color-buttons, .view-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .color-buttons button, .view-buttons button {
             padding: 10px;
-            text-align: center;
-            width: 200px;
-            border-radius: 20px;
-        }
-        .shirt img {
-            max-width: 100%;
-            height: auto;
-        }
-        .shirt button {
-            margin: 5px;
-            padding: 10px;
-            background-color: #414141;
-            color: #fff;
             border: none;
             cursor: pointer;
             border-radius: 20px;
+            background-color: #007bff;
+            color: white; 
+            transition: background-color 0.3s; 
+        }
+        .color-buttons button:hover, .view-buttons button:hover {
+            background-color: #0056b3; 
         }
     </style>
 </head>
 <body>
-    
+    <h1>Детали майки</h1>
+    <div id="shirtDetails"></div>
+    <script src="../lab1/shirts.js"></script>
+    <script src="Scripts/script.js"></script>
 </body>
+</html>
