@@ -1,13 +1,6 @@
 function getTarget(e) {
-  var targ;
-
-  if (!e) var e = window.event;
-  if (e.target) targ = e.target;
-  else if (e.srcElement) targ = e.srcElement;
-  if (targ.nodeType == 3)
-    // defeat Safari bug
-    targ = targ.parentNode;
-
+  var targ = e.target || e.srcElement;
+  if (targ.nodeType === 3) targ = targ.parentNode; // Safari bug fix
   return targ;
 }
 
@@ -17,178 +10,111 @@ function restorePosition(targ, lastX, lastY) {
 }
 
 function prepareDivs() {
-  const Divs = document.getElementsByClassName("target");
+  const divs = document.getElementsByClassName("target");
 
-  var isActive = false;
-  var isColorChangeActive = false;
-  var isFollowingFinger = false;
-  var targ;
-  var lastX, lastY;
-  var offset = [0, 0];
+  let isActive = false;
+  let isColorChangeActive = false;
+  let isResizing = false;
+  let targ = null;
+  let lastX, lastY;
+  let offset = [0, 0];
+  let initialDistance = 0;
+  let initialSize = { width: 0, height: 0 };
 
-  for (let i = 0; i < Divs.length; i++) {
-    Divs[i].addEventListener(
-      "mousedown",
-      function (e) {
-        targ = getTarget(e);
-        lastX = targ.style.top;
-        lastY = targ.style.left;
+  const startDrag = (e) => {
+    targ = getTarget(e);
+    lastX = targ.style.top;
+    lastY = targ.style.left;
+    isActive = true;
+    offset = [
+      targ.offsetLeft - (e.clientX || e.touches[0].clientX),
+      targ.offsetTop - (e.clientY || e.touches[0].clientY),
+    ];
+  };
 
-        isActive = true;
-        offset = [targ.offsetLeft - e.clientX, targ.offsetTop - e.clientY];
-      },
-      true
-    );
+  const stopDrag = () => {
+    isActive = false;
+    isColorChangeActive = false;
+    isResizing = false;
+  };
 
-    Divs[i].addEventListener("dblclick", function (e) {
+  const handleMove = (e) => {
+    if (isActive) {
+      const x = e.clientX || e.touches[0].clientX;
+      const y = e.clientY || e.touches[0].clientY;
+      targ.style.left = `${x + offset[0]}px`;
+      targ.style.top = `${y + offset[1]}px`;
+    }
+  };
+
+  const changeColor = (e) => {
+    if (isColorChangeActive) {
+      const x = e.clientX || e.touches[0]?.clientX;
+      const y = e.clientY || e.touches[0]?.clientY;
+      const color = `rgb(${x % 256}, ${y % 256}, ${(x + y) % 256})`;
+      targ.style.backgroundColor = color;
+    }
+  };
+
+  const handleDoubleClick = (e) => {
+    targ = getTarget(e);
+    lastX = targ.style.top;
+    lastY = targ.style.left;
+    isActive = true;
+    isColorChangeActive = true;
+  };
+
+  const handleEscape = (e) => {
+    if (e.key === "Escape") {
+      stopDrag();
+      restorePosition(targ, lastX, lastY);
+    }
+  };
+
+  const handlePinchStart = (e) => {
+    if (e.touches.length === 2) {
       targ = getTarget(e);
-      lastX = targ.style.top;
-      lastY = targ.style.left;
-      isActive = true;
-      isColorChangeActive = true;
-    });
-
-    Divs[i].addEventListener(
-      "mouseup",
-      function () {
-        isActive = false;
-        isColorChangeActive = false;
-      },
-      true
-    );
-
-    Divs[i].addEventListener(
-      "touchstart",
-      function (e) {
-        targ = getTarget(e);
-        lastX = targ.style.top;
-        lastY = targ.style.left;
-
-        isActive = true;
-        offset = [
-          targ.offsetLeft - e.touches[0].clientX,
-          targ.offsetTop - e.touches[0].clientY,
-        ];
-      },
-      true
-    );
-
-    Divs[i].addEventListener("touchend", function (e) {
+      initialDistance = getDistance(e.touches[0], e.touches[1]);
+      initialSize = {
+        width: targ.offsetWidth,
+        height: targ.offsetHeight,
+      };
+      isResizing = true;
       isActive = false;
-      isColorChangeActive = false;
-    });
+    }
+  };
 
-    Divs[i].addEventListener("touchstart", function (e) {
-      if (e.touches.length === 2) {
-        isActive = false;
-        isColorChangeActive = false;
-        restorePosition(targ, lastX, lastY);
-      }
-    });
+  const handlePinchMove = (e) => {
+    if (isResizing && e.touches.length === 2) {
+      const currentDistance = getDistance(e.touches[0], e.touches[1]);
+      const scale = currentDistance / initialDistance;
 
-    Divs[i].addEventListener("dblclick", function (e) {
-      isFollowingFinger = true;
-      targ = getTarget(e);
-    });
+      targ.style.width = `${initialSize.width * scale}px`;
+      targ.style.height = `${initialSize.height * scale}px`;
+    }
+  };
 
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") {
-        isActive = false;
-        isColorChangeActive = false;
-        restorePosition(targ, lastX, lastY);
-      }
-    });
+  const getDistance = (touch1, touch2) => {
+    const dx = touch2.clientX - touch1.clientX;
+    const dy = touch2.clientY - touch1.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
 
-    document.addEventListener(
-      "mousemove",
-      function (e) {
-        if (isActive) {
-          mousePosition = {
-            x: e.clientX,
-            y: e.clientY,
-          };
-
-          targ.style.left = mousePosition.x + offset[0] + "px";
-          targ.style.top = mousePosition.y + offset[1] + "px";
-        }
-      },
-      true
-    );
-
-    document.addEventListener(
-      "touchmove",
-      function (e) {
-        if (isActive) {
-          touchPosition = {
-            x: e.touches[0].clientX,
-            y: e.touches[0].clientY,
-          };
-
-          targ.style.left = touchPosition.x + offset[0] + "px";
-          targ.style.top = touchPosition.y + offset[1] + "px";
-        }
-      },
-      true
-    );
-
-    document.addEventListener(
-      "mousemove",
-      function (e) {
-        if (isColorChangeActive) {
-          x = e.clientX;
-          y = e.clientY;
-          red = x;
-          green = y;
-          blue = (x + y) / 2;
-          color = [red, green, blue].join(", ");
-          targ.style.backgroundColor = "rgb(" + color + ")";
-        }
-      },
-      true
-    );
-
-    document.addEventListener(
-      "touchmove",
-      function (e) {
-        if (isFollowingFinger) {
-          touchPosition = {
-            x: e.touches[0].clientX,
-            y: e.touches[0].clientY,
-          };
-
-          targ.style.left = touchPosition.x + "px";
-          targ.style.top = touchPosition.y + "px";
-        }
-      },
-      true
-    );
-
-    document.addEventListener(
-      "touchstart",
-      function (e) {
-        if (isFollowingFinger) {
-          touchPosition = {
-            x: e.touches[0].clientX,
-            y: e.touches[0].clientY,
-          };
-
-          targ.style.left = touchPosition.x + "px";
-          targ.style.top = touchPosition.y + "px";
-        }
-      },
-      true
-    );
-
-    document.addEventListener(
-      "touchend",
-      function (e) {
-        if (isFollowingFinger) {
-          isFollowingFinger = false;
-        }
-      },
-      true
-    );
+  for (let div of divs) {
+    div.addEventListener("mousedown", startDrag);
+    div.addEventListener("touchstart", startDrag);
+    div.addEventListener("dblclick", handleDoubleClick);
+    div.addEventListener("mouseup", stopDrag);
+    div.addEventListener("touchend", stopDrag);
+    div.addEventListener("touchstart", handlePinchStart);
+    div.addEventListener("touchmove", handlePinchMove);
   }
+
+  document.addEventListener("mousemove", handleMove);
+  document.addEventListener("touchmove", handleMove);
+  document.addEventListener("mousemove", changeColor);
+  document.addEventListener("touchmove", changeColor);
+  document.addEventListener("keydown", handleEscape);
 }
 
 prepareDivs();
