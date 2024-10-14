@@ -13,13 +13,14 @@ function prepareDivs() {
   const divs = document.getElementsByClassName("target");
 
   let isActive = false;
-  let isColorChangeActive = false;
+  let isFollowingFinger = false;
   let isResizing = false;
   let targ = null;
   let lastX, lastY;
   let offset = [0, 0];
   let initialDistance = 0;
   let initialSize = { width: 0, height: 0 };
+  const MIN_SIZE = 50;
 
   const startDrag = (e) => {
     targ = getTarget(e);
@@ -34,7 +35,7 @@ function prepareDivs() {
 
   const stopDrag = () => {
     isActive = false;
-    isColorChangeActive = false;
+    isFollowingFinger = false;
     isResizing = false;
   };
 
@@ -47,28 +48,9 @@ function prepareDivs() {
     }
   };
 
-  const changeColor = (e) => {
-    if (isColorChangeActive) {
-      const x = e.clientX || e.touches[0]?.clientX;
-      const y = e.clientY || e.touches[0]?.clientY;
-      const color = `rgb(${x % 256}, ${y % 256}, ${(x + y) % 256})`;
-      targ.style.backgroundColor = color;
-    }
-  };
-
   const handleDoubleClick = (e) => {
     targ = getTarget(e);
-    lastX = targ.style.top;
-    lastY = targ.style.left;
-    isActive = true;
-    isColorChangeActive = true;
-  };
-
-  const handleEscape = (e) => {
-    if (e.key === "Escape") {
-      stopDrag();
-      restorePosition(targ, lastX, lastY);
-    }
+    isFollowingFinger = true;
   };
 
   const handlePinchStart = (e) => {
@@ -89,8 +71,40 @@ function prepareDivs() {
       const currentDistance = getDistance(e.touches[0], e.touches[1]);
       const scale = currentDistance / initialDistance;
 
-      targ.style.width = `${initialSize.width * scale}px`;
-      targ.style.height = `${initialSize.height * scale}px`;
+      const newWidth = Math.max(initialSize.width * scale, MIN_SIZE);
+      const newHeight = Math.max(initialSize.height * scale, MIN_SIZE);
+
+      targ.style.width = `${newWidth}px`;
+      targ.style.height = `${newHeight}px`;
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (isFollowingFinger) {
+      const x = e.touches[0].clientX;
+      const y = e.touches[0].clientY;
+      targ.style.left = `${x}px`;
+      targ.style.top = `${y}px`;
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (isFollowingFinger && e.touches.length === 0) {
+      document.addEventListener("touchstart", handleTouchStart);
+    }
+  };
+
+  const handleTouchStart = (e) => {
+    if (isFollowingFinger) {
+      targ.style.left = `${e.touches[0].clientX}px`;
+      targ.style.top = `${e.touches[0].clientY}px`;
+    }
+  };
+
+  const handleEscape = (e) => {
+    if (e.key === "Escape") {
+      stopDrag();
+      restorePosition(targ, lastX, lastY);
     }
   };
 
@@ -112,8 +126,8 @@ function prepareDivs() {
 
   document.addEventListener("mousemove", handleMove);
   document.addEventListener("touchmove", handleMove);
-  document.addEventListener("mousemove", changeColor);
-  document.addEventListener("touchmove", changeColor);
+  document.addEventListener("touchmove", handleTouchMove);
+  document.addEventListener("touchend", handleTouchEnd);
   document.addEventListener("keydown", handleEscape);
 }
 
