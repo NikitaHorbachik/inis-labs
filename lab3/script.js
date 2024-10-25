@@ -4,9 +4,10 @@ function getTarget(e) {
   return targ;
 }
 
-function restorePosition(targ, lastX, lastY) {
+function restorePosition(targ, lastX, lastY, lastColor) {
   targ.style.top = lastX;
   targ.style.left = lastY;
+  targ.style.backgroundColor = lastColor;
 }
 
 function prepareDivs() {
@@ -16,7 +17,7 @@ function prepareDivs() {
   let isColorChangeActive = false;
   let isResizing = false;
   let targ = null;
-  let lastX, lastY;
+  let lastX, lastY, lastColor;
   let offset = [0, 0];
   let initialDistance = 0;
   let initialSize = { width: 0, height: 0 };
@@ -25,6 +26,7 @@ function prepareDivs() {
     targ = getTarget(e);
     lastX = targ.style.top;
     lastY = targ.style.left;
+    lastColor = targ.style.backgroundColor;
     isActive = true;
     offset = [
       targ.offsetLeft - (e.clientX || e.touches[0].clientX),
@@ -60,6 +62,7 @@ function prepareDivs() {
     targ = getTarget(e);
     lastX = targ.style.top;
     lastY = targ.style.left;
+    lastColor = targ.style.backgroundColor;
     isActive = true;
     isColorChangeActive = true;
   };
@@ -67,7 +70,7 @@ function prepareDivs() {
   const handleEscape = (e) => {
     if (e.key === "Escape") {
       stopDrag();
-      restorePosition(targ, lastX, lastY);
+      restorePosition(targ, lastX, lastY, lastColor);
     }
   };
 
