@@ -20,7 +20,7 @@ function prepareDivs() {
   let offset = [0, 0];
   let initialDistance = 0;
   let initialSize = { width: 0, height: 0 };
-  const MIN_SIZE = 300;
+  const MIN_SIZE = 50;
 
   const startDrag = (e) => {
     targ = getTarget(e);
