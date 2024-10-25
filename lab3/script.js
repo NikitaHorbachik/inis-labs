@@ -20,8 +20,7 @@ function prepareDivs() {
   let offset = [0, 0];
   let initialDistance = 0;
   let initialSize = { width: 0, height: 0 };
-  const MIN_SIZE_HEIGHT = 30;
-  const MIN_SIZE_WIDTH = 60;
+  const MIN_SIZE = 300;
 
   const startDrag = (e) => {
     targ = getTarget(e);
@@ -72,8 +71,8 @@ function prepareDivs() {
       const currentDistance = getDistance(e.touches[0], e.touches[1]);
       const scale = currentDistance / initialDistance;
 
-      const newWidth = Math.max(initialSize.width * scale, MIN_SIZE_WIDTH);
-      const newHeight = Math.max(initialSize.height * scale, MIN_SIZE_HEIGHT);
+      const newWidth = Math.max(initialSize.width * scale, MIN_SIZE);
+      const newHeight = Math.max(initialSize.height * scale, MIN_SIZE);
 
       targ.style.width = `${newWidth}px`;
       targ.style.height = `${newHeight}px`;
