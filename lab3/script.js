@@ -1,9 +1,3 @@
-function getTarget(e) {
-  var targ = e.target || e.srcElement;
-  if (targ.nodeType === 3) targ = targ.parentNode; // Safari bug fix
-  return targ;
-}
-
 function restorePosition(targ, lastX, lastY, lastColor) {
   targ.style.top = lastX;
   targ.style.left = lastY;
@@ -23,7 +17,7 @@ function prepareDivs() {
   let initialSize = { width: 0, height: 0 };
 
   const startDrag = (e) => {
-    targ = getTarget(e);
+    targ = e.target;
     lastX = targ.style.top;
     lastY = targ.style.left;
     lastColor = targ.style.backgroundColor;
@@ -59,7 +53,7 @@ function prepareDivs() {
   };
 
   const handleDoubleClick = (e) => {
-    targ = getTarget(e);
+    targ = e.target;
     lastX = targ.style.top;
     lastY = targ.style.left;
     lastColor = targ.style.backgroundColor;
@@ -76,7 +70,7 @@ function prepareDivs() {
 
   const handlePinchStart = (e) => {
     if (e.touches.length === 2) {
-      targ = getTarget(e);
+      targ = e.target;
       initialDistance = getDistance(e.touches[0], e.touches[1]);
       initialSize = {
         width: targ.offsetWidth,
