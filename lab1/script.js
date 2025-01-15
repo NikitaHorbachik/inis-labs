@@ -31,7 +31,7 @@ function renderShirts(shirtArray) {
 
     const seePageButton = document.createElement("button");
     seePageButton.textContent = "Смотреть страницу";
-    seePageButton.addEventListener("click", () => goToDetailsPage(shirt)); // Добавляем вызов функции при клике
+    seePageButton.addEventListener("click", () => goToDetailsPage(shirt));
 
     shirtDiv.appendChild(title);
     shirtDiv.appendChild(image);
@@ -43,11 +43,8 @@ function renderShirts(shirtArray) {
   });
 }
 
-// Функция для перехода на страницу details.html с сохранением данных о майке
 function goToDetailsPage(shirt) {
-  // Сохраняем данные о майке в localStorage
   localStorage.setItem("selectedShirt", JSON.stringify(shirt));
-  // Перенаправляем на страницу details.html
   window.location.href = "../lab2/details.html";
 }
 
@@ -70,7 +67,7 @@ function showQuickView(shirt) {
     if (colorKeys.length > 1) {
       modalImage.src = shirt.colors[colorKeys[index]].front;
       index = (index + 1) % colorKeys.length;
-      setTimeout(showNextImage, 2000);
+      setTimeout(showNextImage, 3000);
     } else if (colorKeys.length === 1) {
       modalImage.src = shirt.colors[colorKeys[0]].front;
     } else {
@@ -81,11 +78,6 @@ function showQuickView(shirt) {
   showNextImage();
 
   modal.style.display = "block";
-
-  const closeBtn = document.getElementsByClassName("close")[0];
-  closeBtn.onclick = function () {
-    modal.style.display = "none";
-  };
 
   window.onclick = function (event) {
     if (event.target === modal) {

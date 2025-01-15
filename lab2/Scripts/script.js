@@ -3,7 +3,7 @@ const selectedShirt = JSON.parse(localStorage.getItem("selectedShirt"));
 function renderShirtDetails() {
   if (!selectedShirt) {
     document.getElementById("shirtDetails").innerHTML =
-      "<h3>Майка не найдена!</h3>";
+      "<h3>Shirt not found!</h3>";
     return;
   }
 
@@ -23,12 +23,10 @@ function renderShirtDetails() {
   image.alt = selectedShirt.name;
 
   const description = document.createElement("p");
-  description.textContent = `Описание: ${
-    selectedShirt.description || "Нет описания"
-  }`;
+  description.textContent = `${selectedShirt.description || "No description"}`;
 
   const price = document.createElement("p");
-  price.textContent = `Цена: ${selectedShirt.price}`;
+  price.textContent = `Price: ${selectedShirt.price}`;
 
   const colorButtonsContainer = document.createElement("div");
   colorButtonsContainer.className = "color-buttons";
